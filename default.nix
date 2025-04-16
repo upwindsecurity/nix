@@ -1,6 +1,6 @@
 { lib, stdenv, fetchurl, curl, pkgs
-, upwindAgentVersion
-, upwindAgentSha256_amd64, upwindAgentSha256_arm64
+, upwindSensorVersion
+, upwindSensorSha256_amd64, upwindSensorSha256_arm64
 , hostconfigVersion
 , hostconfigSha256_amd64, hostconfigSha256_arm64
 , upwindAuthEndpoint ? "https://oauth.upwind.dev/oauth/token"
@@ -16,8 +16,8 @@ let
     else throw "Unsupported platform: ${stdenv.hostPlatform.system}";
   
   # Use the appropriate sha256 based on architecture
-  upwindAgentSha256 = if isX86_64 then upwindAgentSha256_amd64
-    else if isAarch64 then upwindAgentSha256_arm64
+  upwindSensorSha256 = if isX86_64 then upwindSensorSha256_amd64
+    else if isAarch64 then upwindSensorSha256_arm64
     else throw "No sha256 defined for platform: ${stdenv.hostPlatform.system}";
     
   hostconfigSha256 = if isX86_64 then hostconfigSha256_amd64
@@ -26,17 +26,17 @@ let
 in
 
 stdenv.mkDerivation rec {
-  pname = "upwind-agent";
-  version = upwindAgentVersion;
+  pname = "upwind-sensor";
+  version = upwindSensorVersion;
 
   srcs = [
     (fetchurl {
-      url = "https://releases.upwind.dev/upwind-agent/v${upwindAgentVersion}/upwind-agent-v${upwindAgentVersion}-linux-${arch}.tar.gz";
-      sha256 = upwindAgentSha256;
+      url = "https://releases.upwind.dev/upwind-sensor/v${upwindSensorVersion}/upwind-sensor-v${upwindSensorVersion}-linux-${arch}.tar.gz";
+      sha256 = upwindSensorSha256;
       curlOptsList = [ "--header" "Authorization: Bearer $UPWIND_TOKEN" ];
     })
     (fetchurl {
-      url = "https://releases.upwind.dev/upwind-agent-hostconfig/v${hostconfigVersion}/upwind-agent-hostconfig-v${hostconfigVersion}-linux-${arch}.tar.gz";
+      url = "https://releases.upwind.dev/upwind-sensor-hostconfig/v${hostconfigVersion}/upwind-sensor-hostconfig-v${hostconfigVersion}-linux-${arch}.tar.gz";
       sha256 = hostconfigSha256;
       curlOptsList = [ "--header" "Authorization: Bearer $UPWIND_TOKEN" ];
     })
@@ -47,13 +47,13 @@ stdenv.mkDerivation rec {
   installPhase = ''
     runHook preInstall
     mkdir -p $out/bin
-    cp upwind-agent $out/bin/
-    cp upwind-agent-hostconfig $out/bin/
+    cp upwind-sensor $out/bin/
+    cp upwind-sensor-hostconfig $out/bin/
     runHook postInstall
   '';
 
   meta = with lib; {
-    description = "Upwind Security Agent Components";
+    description = "Upwind Security Sensor Components";
     # homepage = "https://docs.upwind.io";
     license = licenses.asl20; # Based on SPDX-License-Identifier: Apache-2.0
     platforms = platforms.linux;
