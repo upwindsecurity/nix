@@ -1,5 +1,5 @@
 { stdenv, bash, curl, jq
-, upwindIo
+, domain
 , region
 , artifactName
 , artifactVersion
@@ -9,7 +9,7 @@
 
 let
   tarballName = "${artifactName}-v${artifactVersion}-linux-${artifactArch}.tar.gz";
-  regionUrl=if region == "us" then upwindIo else "${region}.${upwindIo}"; 
+  regionUrl=if region == "us" then domain else "${region}.${domain}"; 
   releaseUrl="https://releases.${regionUrl}";
   artifactUrl="${releaseUrl}/${artifactName}/v${artifactVersion}/${tarballName}";
   authEndpoint="https://oauth.${regionUrl}/oauth/token";

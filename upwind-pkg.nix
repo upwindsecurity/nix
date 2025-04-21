@@ -16,17 +16,38 @@ let
     else if isAarch64 then "arm64"
     else throw "Unsupported platform: ${stdenv.hostPlatform.system}";
 
-  srcs = [(import ./upwind-artifact.nix {
+  sensorSemver = if sensorVersion == "dev" then version_table.dev.sensor
+    else if sensorVersion == "stable" then version_table.stable.sensor
+    else sensorVersion;
+
+  sensorHash = lib.attrsets.attrByPath [sensorSemver arch] "" version_table.hashes.sensor;
+
+  hostconfigSemver = if hostconfigVersion == "dev" then version_table.dev.hostconfig
+    else if hostconfigVersion == "stable" then version_table.stable.hostconfig
+    else hostconfigVersion;
+
+  hostconfigHash = lib.attrsets.attrByPath [hostconfigSemver arch] "" version_table.hashes.hostconfig;
+
+  srcs =
+    [(import ./upwind-artifact.nix {
       inherit stdenv bash curl jq;
-      # authUrl = "";
-      # artifactUrl = "";
-      artifactHash = "";
-      region = "";
-      upwindIo = "";
-      artifactName = "";
-      artifactVersion = "";
-      artifactArch = "";
-    }).out];
+      artifactName = "upwind-agent";
+      artifactVersion = sensorSemver;
+      artifactArch = arch;
+      artifactHash = sensorHash;
+      region = region;
+      domain = domain;
+    }).out]
+    ++ lib.optionals (hostconfigVersion != "")
+    [(import ./upwind-artifact.nix {
+      inherit stdenv bash curl jq;
+      artifactName = "upwind-agent-hostconfig";
+      artifactVersion = hostconfigSemver;
+      artifactArch = arch;
+      artifactHash = hostconfigHash;
+      region = region;
+      domain = domain;
+    })];
 in
 
 stdenv.mkDerivation rec {
@@ -40,8 +61,8 @@ stdenv.mkDerivation rec {
   installPhase = ''
     runHook preInstall
     mkdir -p $out/bin
-    cp upwind-sensor $out/bin/
-    cp upwind-sensor-hostconfig $out/bin/
+    cp upwind-agent $out/bin/upwind-sensor
+    cp upwind-agent-hostconfig $out/bin/upwind-sensor-hostconfig 2> /dev/null || true
     runHook postInstall
   '';
 

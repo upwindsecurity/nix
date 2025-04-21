@@ -2,25 +2,33 @@
 
 ## TODO
 
-* Change fetch so credentials don't end up in nix store
-* Remove credentials from sensor.yaml, to systemd creds?, for same reason.
 * Use latest version of scanner systemd service file
-* Rename all the things from sensor to sensor since this is greenfield.
-* Toggles for the hostconfig and scanner services.
 * Support Nix Flakes.
 
 ## Usage
 
+Provide credentials to fetch artifacts:
+
+```
+UPWIND_CLIENT_ID=...
+UPWIND_CLIENT_SECRET=...
+```
+
 Add `./upwind/upwind-sensor.nix` to imports.
 
-And enable the service with:
+Enable the service(s) with:
 
 ```
 services.upwindSensor = {
   enable = true;
-  region = "us";                                        # Change to "eu" if needed
-  clientId = "BlobOfRandomCharacters";                  # Change to actual clientId
-  clientSecretFile = "/path/to/upwind-client-secret";   # Update with actual path
+  enableScanner = true;
+  enableHostconfig = true;
+  sensorVersion = "0.111.2";   # (Optional) pin sensor/scanner version
+  hostconfigVersion = "0.5.2"; # (Optional) pin hostconfig version
+  region = "us";               # Change to "eu" if needed
   logLevel = "info";
 };
 ```
+
+Provide `upwind-sensor` and `upwind-sensor-hostconfig` services with
+the same credentials used at build time.

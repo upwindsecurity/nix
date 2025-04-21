@@ -9,13 +9,13 @@ response="$("${curl}" -fsSL -X POST \
     --data "client_secret=${UPWIND_CLIENT_SECRET}" \
     --url "${authEndpoint}" 2>&1)"
 if [[ $? != 0 ]]; then
-    printf "Unable to get auth token: %s" "${response}"
+    printf "error: unable to get auth token: %s" "${response}"
     exit 1
 fi
 
 authHeader="Authorization: Bearer $(echo "${response}" | ${jq} -r .access_token)"
 if [[ -z "${authHeader}" ]]; then
-    printf "Failed to find access_token in authentication response."
+    printf "error: failed to find access_token in authentication response."
     exit 1
 fi
 
