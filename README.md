@@ -14,12 +14,12 @@ UPWIND_CLIENT_ID=...
 UPWIND_CLIENT_SECRET=...
 ```
 
-Add `./upwind/upwind-sensor.nix` to imports.
+Add `./upwind.nix` to imports.
 
 Enable the service(s) with:
 
 ```
-services.upwindSensor = {
+services.upwind = {
   enable = true;
   enableScanner = true;
   enableHostconfig = true;
@@ -32,3 +32,10 @@ services.upwindSensor = {
 
 Provide `upwind-sensor` and `upwind-sensor-hostconfig` services with
 the same credentials used at build time.
+
+## Testing
+
+The configuration in the `test/` directory can be used with nix-build
+to test the build:
+
+`nix-build test/test.nix`

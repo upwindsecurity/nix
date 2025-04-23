@@ -5,7 +5,7 @@
   ];
   services.upwindSensor = {
     enable = true;
-    domain = "upwind.dev";
+    domain = "upwind.io";
   };
 
   # ---------------------------------------------------------------------------
