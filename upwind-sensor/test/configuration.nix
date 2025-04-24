@@ -1,7 +1,7 @@
 { config, pkgs, ... }:
 {
   imports = [
-    ../upwind.nix
+    ../default.nix
   ];
   services.upwindSensor = {
     enable = true;
