@@ -6,6 +6,9 @@
   services.upwindSensor = {
     enable = true;
     domain = "upwind.io";
+    cloudProvider = "byoc";
+    cloudAccountId = "byoc-1234";
+    zone = "byoc-east";
   };
 
   # ---------------------------------------------------------------------------
