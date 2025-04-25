@@ -5,8 +5,8 @@
 response="$("${curl}" -fsSL -X POST \
     --data grant_type=client_credentials \
     --data "audience=${authAudience}" \
-    --data "client_id=${UPWIND_CLIENT_ID}" \
-    --data "client_secret=${UPWIND_CLIENT_SECRET}" \
+    --data "client_id=${UPWIND_AUTH_CLIENT_ID}" \
+    --data "client_secret=${UPWIND_AUTH_CLIENT_SECRET}" \
     --url "${authEndpoint}" 2>&1)"
 if [[ $? != 0 ]]; then
     printf "error: unable to get auth token: %s" "${response}"

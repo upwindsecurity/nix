@@ -21,7 +21,7 @@ in
     name = tarballName;
     src = ./.;
 
-    impureEnvVars=["UPWIND_CLIENT_ID" "UPWIND_CLIENT_SECRET"];
+    impureEnvVars=["UPWIND_AUTH_CLIENT_ID" "UPWIND_AUTH_CLIENT_SECRET"];
 
     curl = "${curl}/bin/curl";
     jq = "${jq}/bin/jq";
