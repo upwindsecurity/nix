@@ -2,7 +2,6 @@
 
 ## TODO
 
-* Use latest version of scanner systemd service file
 * Support Nix Flakes.
 
 ## Usage
