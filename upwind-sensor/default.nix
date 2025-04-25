@@ -161,6 +161,10 @@ in
       wants = [ "network-online.target" ];
       wantedBy = [ "multi-user.target" ];
 
+      restartTriggers = [
+        config.environment.etc."upwind/agent.yaml".source
+      ];
+
       serviceConfig = {
         ExecStart = "${upwindPkg}/bin/upwind-sensor agent";
         Restart = "always";
@@ -178,6 +182,12 @@ in
       after = [ "network-online.target" ];
       wants = [ "network-online.target" ];
       wantedBy = [ "multi-user.target" ];
+
+      restartTriggers = [
+        config.environment.etc."upwind/agent.yaml".source
+        config.environment.etc."upwind/agent-hostconfig.yaml".source 
+      ];
+      
       serviceConfig = {
         ExecStart = "${upwindPkg}/bin/upwind-sensor-hostconfig";
         Restart = "always";
