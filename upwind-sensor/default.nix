@@ -23,7 +23,7 @@ in
 
     enableHostconfig = mkOption {
       type = types.bool;
-      default = true;
+      default = false;
       description = "Enable the Upwind Sensor Hostconfig.";
     };
 
@@ -187,7 +187,7 @@ in
         config.environment.etc."upwind/agent.yaml".source
         config.environment.etc."upwind/agent-hostconfig.yaml".source 
       ];
-      
+
       serviceConfig = {
         ExecStart = "${upwindPkg}/bin/upwind-sensor-hostconfig";
         Restart = "always";
