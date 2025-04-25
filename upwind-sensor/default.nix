@@ -129,7 +129,7 @@ in
       wantedBy = [ "multi-user.target" ];
 
       serviceConfig = {
-        ExecStart = "${upwindPkg}/bin/upwind-sensor sensor";
+        ExecStart = "${upwindPkg}/bin/upwind-sensor agent";
         Restart = "always";
         # Resource Controls - map options to systemd properties
         CPUQuota = cfg.sensorCpuQuota;
