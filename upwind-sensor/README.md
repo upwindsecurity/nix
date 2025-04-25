@@ -28,9 +28,7 @@ in {
   services.upwindSensor = {
     enable = true;
     enableScanner = true;
-    enableHostconfig = true;
     sensorVersion = "0.111.2";   # (Optional) pin sensor/scanner version
-    hostconfigVersion = "0.5.2"; # (Optional) pin hostconfig version
     region = "us";               # Change to "eu" if needed
     logLevel = "info";
   };
