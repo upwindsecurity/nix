@@ -2,7 +2,6 @@
 
 ## TODO
 
-* Use latest version of scanner systemd service file
 * Support Nix Flakes.
 
 ## Usage
@@ -10,24 +9,30 @@
 Provide credentials to fetch artifacts:
 
 ```
-UPWIND_CLIENT_ID=...
-UPWIND_CLIENT_SECRET=...
+UPWIND_AUTH_CLIENT_ID=...
+UPWIND_AUTH_CLIENT_SECRET=...
 ```
 
-Import `upwind-sensor`.
-
-Enable the service(s) with:
+In `configuration.nix`, enable the Upwind Sensor services with:
 
 ```
-services.upwind = {
-  enable = true;
-  enableScanner = true;
-  enableHostconfig = true;
-  sensorVersion = "0.111.2";   # (Optional) pin sensor/scanner version
-  hostconfigVersion = "0.5.2"; # (Optional) pin hostconfig version
-  region = "us";               # Change to "eu" if needed
-  logLevel = "info";
-};
+let
+  upwindRepo = builtins.fetchTarball {
+    url = "https://github.com/upwindsecurity/nix/archive/main.tar.gz";
+  };
+in {
+  imports = [
+    "${upwindRepo}/upwind-sensor"
+  ];
+
+  services.upwindSensor = {
+    enable = true;
+    enableScanner = true;
+    sensorVersion = "0.111.2";   # (Optional) pin sensor/scanner version
+    region = "us";               # Change to "eu" if needed
+    logLevel = "info";
+  };
+}
 ```
 
 Provide `upwind-sensor`, `upwind-sensor-scanner`, and `upwind-sensor-hostconfig`
