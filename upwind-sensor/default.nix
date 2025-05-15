@@ -113,6 +113,12 @@ in
       description = "Explicitly set cloud zone/region; default is auto-detect.";
     };
 
+    environmentFile = mkOption {
+      type = types.listOf types.path;
+      default = [];
+      description = "List of environment files to load for Upwind services.";
+    };
+
     # TODO: ... add options corresponding to UPWIND_ variables
     # TODO: Configure scanner exclusions
   };
@@ -173,11 +179,12 @@ in
         MemoryMax = cfg.sensorMemoryMax; # Define memoryMax option
         MemoryHigh = cfg.sensorMemoryHigh; # Define memoryHigh option
         # ... other service settings
+        EnvironmentFile = cfg.environmentFile;
       };
     };
 
     # Hostconfig Service
-    systemd.services.upwind-sensor-hostconfig = {
+    systemd.services.upwind-sensor-hostconfig = mkIf cfg.enableHostconfig {
       description = "Upwind Sensor Hostconfig";
       after = [ "network-online.target" ];
       wants = [ "network-online.target" ];
@@ -191,11 +198,12 @@ in
       serviceConfig = {
         ExecStart = "${upwindPkg}/bin/upwind-sensor-hostconfig";
         Restart = "always";
+        EnvironmentFile = cfg.environmentFile;
       };
     };
 
     # Scanner Service
-    systemd.services.upwind-sensor-scanner = {
+    systemd.services.upwind-sensor-scanner = mkIf cfg.enableScanner {
       description = "Upwind Sensor Scanner";
       serviceConfig = {
         Type = "exec";
@@ -205,11 +213,12 @@ in
         IOWeight = cfg.scannerIoWeight;   # Define option
         MemoryMax = cfg.scannerMemoryMax; # Define option
         # ...
+        EnvironmentFile = cfg.environmentFile;
       };
     };
 
     # Scanner Timer
-    systemd.timers.upwind-sensor-scanner = {
+    systemd.timers.upwind-sensor-scanner = mkIf cfg.enableScanner {
        description = "Upwind Sensor Scanner Timer";
        wantedBy = [ "timers.target" ];
        timerConfig = {
