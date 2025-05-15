@@ -31,12 +31,22 @@ in {
     sensorVersion = "0.111.2";   # (Optional) pin sensor/scanner version
     region = "us";               # Change to "eu" if needed
     logLevel = "info";
+    environmentFile = [
+      /path/to/credentials.env   # Contains the credential env vars
+    ]
   };
 }
 ```
 
 Provide `upwind-sensor`, `upwind-sensor-scanner`, and `upwind-sensor-hostconfig`
 services with the same credentials used at build time.
+
+Credentials may be placed in an environment file out-of-band from nix, and the
+path to that file set in the `environmentFile` attribute.
+
+Depending on your deployment architecture, your nix-daemon may also need these
+credentials to fetch the upwind-sensor tarball. If this is the case, the same
+file can be passed to `systemd.services.nix-daemon.serviceConfig.EnvironmentFile`.
 
 ## Testing
 
