@@ -59,9 +59,9 @@ in
 
     # CPU and memory resource limits
     sensorCpuQuota = mkOption {
-      type = types.nullOr types.str; # e.g., "50%"
-      default = null; # Use systemd default or sensor default if null
-      description = "Systemd CPUQuota setting for the sensor service.";
+      type = types.int;
+      default = 50;
+      description = "Systemd CPUQuota setting for the sensor service (default 50%).";
     };
 
     sensorMemoryMax = mkOption {
@@ -77,22 +77,34 @@ in
     };
 
     # Scanner resource settings
+    scannerCpuQuota = mkOption {
+      type = types.int;
+      default = 50;
+      description = "CPU quota for the scanner service (default 50%).";
+    };
+
     scannerCpuWeight = mkOption {
       type = types.nullOr types.int;
-      default = null;
-      description = "CPU weight for the scanner service.";
+      default = 25;
+      description = "CPU weight for the scanner service (default 25).";
     };
 
     scannerIoWeight = mkOption {
       type = types.nullOr types.int;
-      default = null;
-      description = "I/O weight for the scanner service.";
+      default = 25;
+      description = "I/O weight for the scanner service (default 25).";
     };
 
     scannerMemoryMax = mkOption {
-      type = types.nullOr types.str;
-      default = null;
-      description = "Maximum memory limit for the scanner service (e.g., '500M').";
+      type = types.str;
+      default = "1G";
+      description = "Maximum memory limit for the scanner service (default '1G').";
+    };
+
+    scannerMemoryHigh = mkOption {
+      type = types.str;
+      default = "900M";
+      description = "High memory limit for the scanner service (default '900M').";
     };
 
     cloudProvider = mkOption {
@@ -175,7 +187,7 @@ in
         ExecStart = "${upwindPkg}/bin/upwind-sensor agent";
         Restart = "always";
         # Resource Controls - map options to systemd properties
-        CPUQuota = cfg.sensorCpuQuota;
+        CPUQuota = "${builtins.toString cfg.sensorCpuQuota}%";
         MemoryMax = cfg.sensorMemoryMax; # Define memoryMax option
         MemoryHigh = cfg.sensorMemoryHigh; # Define memoryHigh option
         # ... other service settings
@@ -207,11 +219,13 @@ in
       description = "Upwind Sensor Scanner";
       serviceConfig = {
         Type = "exec";
-        ExecStart = "${upwindPkg}/bin/upwind-sensor scan --path=/"; # Assuming scan command
+        ExecStart = "${upwindPkg}/bin/upwind-sensor scan --path=/";
         # Resource controls for scanner
-        CPUWeight = cfg.scannerCpuWeight; # Define option
-        IOWeight = cfg.scannerIoWeight;   # Define option
-        MemoryMax = cfg.scannerMemoryMax; # Define option
+        CPUQuota = "${builtins.toString cfg.scannerCpuQuota}%";
+        CPUWeight = "${builtins.toString cfg.scannerCpuWeight}";
+        IOWeight = "${builtins.toString cfg.scannerIoWeight}";
+        MemoryMax = cfg.scannerMemoryMax;
+        MemoryHigh = cfg.scannerMemoryHigh;
         # ...
         EnvironmentFile = cfg.environmentFile;
       };
