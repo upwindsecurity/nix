@@ -53,4 +53,4 @@ file can be passed to `systemd.services.nix-daemon.serviceConfig.EnvironmentFile
 The configuration in the `test/` directory can be used with nix-build
 to test the build:
 
-`nix-build test/test.nix`
+`nix-build test`
