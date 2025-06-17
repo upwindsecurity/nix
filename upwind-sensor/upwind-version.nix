@@ -27,6 +27,10 @@
         amd64 = "2d037872bd09ac4b38ea6823bbf875277e00ea4eed8a9098b854b476637ce20c";
         arm64 = "bd9814046197bb9b462e8cc3aa25515262a72fa6f41320b0a85d6577bb685089";
       };
+      "0.116.0-alpha2" = {
+        amd64 = "77c184f213cd90d93cfd30dbb331b33f767c17251dd434a1ea1d31ebfa3e6881";
+        arm64 = "f57aea4525c1f988b5d66b95d0642aece6cf8d3ee1e4e89d714c87a41ab88d6a";
+      };
     };
     hostconfig = {
       "0.5.2" = {
