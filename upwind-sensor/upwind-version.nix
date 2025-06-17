@@ -5,7 +5,7 @@
     sensor = "0.115.3";
     hostconfig = "0.5.2";
   };
-  
+
   # The latest dev release
   dev = {
     sensor = "0.115.3";
@@ -30,6 +30,10 @@
       "0.116.0-alpha2" = {
         amd64 = "77c184f213cd90d93cfd30dbb331b33f767c17251dd434a1ea1d31ebfa3e6881";
         arm64 = "f57aea4525c1f988b5d66b95d0642aece6cf8d3ee1e4e89d714c87a41ab88d6a";
+      };
+      "0.116.2-alpha1" = {
+        amd64 = "1596434f5c19897db38334caa7b466bf7da5b2936f9737147ad7646f535cc628";
+        arm64 = "085aba5ed1fb5baa27d1249b6d2c8cc609a7a4c3c9f3ad208651616261cc2efd";
       };
     };
     hostconfig = {
