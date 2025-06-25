@@ -28,12 +28,21 @@ in {
   services.upwindSensor = {
     enable = true;
     enableScanner = true;
-    sensorVersion = "0.111.2";   # (Optional) pin sensor/scanner version
+    sensorVersion = "0.115.3";   # (Optional) pin sensor/scanner version
     region = "us";               # Change to "eu" if needed
     logLevel = "info";
+    sensorEnvironment = {        # (Optional) additional env vars for sensor service
+      EXAMPLE_VAR = "example";
+    };
+    scannerEnvironment = {       # (Optional) additional env vars for scanner service
+      EXAMPLE_VAR = "example";
+    };
+    extraConfig = {              # (Optional) extra config for agent.yaml file
+      example = true;
+    };
     environmentFile = [
       /path/to/credentials.env   # Contains the credential env vars
-    ]
+    ];
   };
 }
 ```
