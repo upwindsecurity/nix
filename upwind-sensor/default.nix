@@ -10,6 +10,15 @@ let
     region = cfg.region;
     domain = cfg.domain;
   };
+  coerceToString = x:
+    if builtins.isBool x then
+      if x then "true" else "false"
+    else builtins.toString x;
+  extraConfigKeys = lib.attrsets.attrNames cfg.extraConfig;
+  extraConfigValues = lib.lists.forEach (lib.attrsets.attrValues cfg.extraConfig) coerceToString;
+  extraConfigString = lib.strings.concatLines (
+    lib.lists.zipListsWith (key: value: "${key}: \"${value}\"") extraConfigKeys extraConfigValues
+  );
 in
 {
   options.services.upwindSensor = {
@@ -76,6 +85,20 @@ in
       description = "Memory threshold for the sensor service when throttling begins.";
     };
 
+    sensorEnvironment = mkOption {
+      type =
+        with lib.types;
+        attrsOf (
+          nullOr (oneOf [
+            int
+            str
+            path
+          ])
+        );
+      default = {};
+      description = "Environment variables to set in the upwind-sensor service.";
+    };
+
     # Scanner resource settings
     scannerCpuQuota = mkOption {
       type = types.int;
@@ -107,6 +130,20 @@ in
       description = "High memory limit for the scanner service (default '900M').";
     };
 
+    scannerEnvironment = mkOption {
+      type =
+        with lib.types;
+        attrsOf (
+          nullOr (oneOf [
+            int
+            str
+            path
+          ])
+        );
+      default = {};
+      description = "Environment variables to set in the upwind-sensor-scanner service.";
+    };
+
     cloudProvider = mkOption {
       type = types.nullOr types.str;
       default = null;
@@ -131,6 +168,21 @@ in
       description = "List of environment files to load for Upwind services.";
     };
 
+    extraConfig = mkOption {
+      type =
+        with lib.types;
+        attrsOf (
+          nullOr (oneOf [
+            bool
+            int
+            str
+            path
+          ])
+        );
+      default = {};
+      description = "Additional configuration added to /etc/upwind/agent.yaml";
+    };
+
     # TODO: ... add options corresponding to UPWIND_ variables
     # TODO: Configure scanner exclusions
   };
@@ -148,7 +200,8 @@ in
     ''
     + (if cfg.cloudProvider != null then "cloud-provider: \"${cfg.cloudProvider}\"\n" else "")
     + (if cfg.cloudAccountId != null then "cloud-account-id: \"${cfg.cloudAccountId}\"\n" else "")
-    + (if cfg.zone != null then "zone: \"${cfg.zone}\"\n" else "");
+    + (if cfg.zone != null then "zone: \"${cfg.zone}\"\n" else "")
+    + extraConfigString;
 
     # TODO: ... other hostconfig specific settings
     environment.etc."upwind/agent-hostconfig.yaml".text = ''
@@ -178,6 +231,8 @@ in
       after = [ "network-online.target" ];
       wants = [ "network-online.target" ];
       wantedBy = [ "multi-user.target" ];
+
+      environment = cfg.sensorEnvironment;
 
       restartTriggers = [
         config.environment.etc."upwind/agent.yaml".source
@@ -217,6 +272,7 @@ in
     # Scanner Service
     systemd.services.upwind-sensor-scanner = mkIf cfg.enableScanner {
       description = "Upwind Sensor Scanner";
+      environment = cfg.scannerEnvironment;
       serviceConfig = {
         Type = "exec";
         ExecStart = "${upwindPkg}/bin/upwind-sensor scan --path=/";
