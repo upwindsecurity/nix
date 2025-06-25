@@ -20,8 +20,8 @@
         arm64 = "4d9f2e12c57ed9374c532790f2e200b0d5d11cfa7627ace7f336ebacbebd3cb4";
       };
       "0.115.3" = {
-        amd64 = "690bb87285595c010cca7f0bff7defaef95b899000c03bf553b1bd9cbd53dd25";
-        arm64 = "f6dc098e168e402f0061567f8367ffcee9e12bfdbdfb9fe4068f08093c9c2025";
+        amd64 = "c9a037b66455fc9ab9ddfc719628154ab7f9495bb4efafb4ab0a8eb159539a53";
+        arm64 = "bed4f044859747755af52cd9b93f8a8b3f0ce3d1c477498add604b1a1e8ac2d0";
       };
       "0.116.0-alpha1" = {
         amd64 = "2d037872bd09ac4b38ea6823bbf875277e00ea4eed8a9098b854b476637ce20c";
