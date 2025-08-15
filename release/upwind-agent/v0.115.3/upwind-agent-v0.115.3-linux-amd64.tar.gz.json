@@ -1,0 +1,7 @@
+{
+  "name": "upwind-agent",
+  "arch": "amd64",
+  "version": "0.115.3",
+  "package": "https://releases.upwind.io/upwind-agent/v0.115.3/upwind-agent-v0.115.3-linux-amd64.tar.gz",
+  "sha256": "c9a037b66455fc9ab9ddfc719628154ab7f9495bb4efafb4ab0a8eb159539a53"
+}
