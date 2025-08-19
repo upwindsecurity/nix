@@ -2,51 +2,27 @@
   sensorVersion,
   hostconfigVersion,
   region,
-  domain,
+  dev,
 }:
 
 let
-  version_table = import ./upwind-version.nix;
-
-  # Determine system architecture
-  isX86_64 = stdenv.hostPlatform.system == "x86_64-linux";
-  isAarch64 = stdenv.hostPlatform.system == "aarch64-linux";
-  
-  arch = if isX86_64 then "amd64"
-    else if isAarch64 then "arm64"
-    else throw "Unsupported platform: ${stdenv.hostPlatform.system}";
-
-  sensorSemver = if sensorVersion == "dev" then version_table.dev.sensor
-    else if sensorVersion == "stable" then version_table.stable.sensor
-    else sensorVersion;
-
-  sensorHash = lib.attrsets.attrByPath [sensorSemver arch] "" version_table.hashes.sensor;
-
-  hostconfigSemver = if hostconfigVersion == "dev" then version_table.dev.hostconfig
-    else if hostconfigVersion == "stable" then version_table.stable.hostconfig
-    else hostconfigVersion;
-
-  hostconfigHash = lib.attrsets.attrByPath [hostconfigSemver arch] "" version_table.hashes.hostconfig;
-
+  release = import ./release.nix {
+    inherit sensorVersion hostconfigVersion region dev;
+    system = stdenv.hostPlatform.system;
+  };
   srcs =
     [(import ./upwind-artifact.nix {
       inherit stdenv bash curl jq;
-      artifactName = "upwind-agent";
-      artifactVersion = sensorSemver;
-      artifactArch = arch;
-      artifactHash = sensorHash;
-      region = region;
-      domain = domain;
+      name = release.pkgs.sensorTarballName;
+      artifactUrl = release.pkgs.sensorTarballUrl;
+      artifactHash = release.pkgs.sensorTarballHash;
     }).out]
-    ++ lib.optionals (hostconfigVersion != "")
+    ++ lib.optionals (release.pkgs.hostconfigTarballUrl != null)
     [(import ./upwind-artifact.nix {
       inherit stdenv bash curl jq;
-      artifactName = "upwind-agent-hostconfig";
-      artifactVersion = hostconfigSemver;
-      artifactArch = arch;
-      artifactHash = hostconfigHash;
-      region = region;
-      domain = domain;
+      name = release.pkgs.hostconfigTarballName;
+      artifactUrl = release.pkgs.hostconfigTarballUrl;
+      artifactHash = release.pkgs.hostconfigTarballHash;
     })];
 in
 
