@@ -29,15 +29,15 @@ rec {
       hostconfigSemver = lib.strings.removePrefix "v" (
         if hostconfigVersion == "stable" then lib.importJSON pathHostconfigStable else hostconfigVersion
       );
-      hostconfigTarballName = "upwind-agent-hostconfig-v${hostconfigSemver}-linux-${arch}.tar.gz";
+      hostconfigTarballName = if hostconfigVersion != "" then "upwind-agent-hostconfig-v${hostconfigSemver}-linux-${arch}.tar.gz" else null;
       hostconfigManifest = lib.importJSON ../release/upwind-agent-hostconfig/v${hostconfigSemver}/${hostconfigTarballName}.json;
     in {
       inherit sensorTarballName hostconfigTarballName;
       sensorTarballUrl = "https://${releasesDomain}/upwind-agent/v${sensorSemver}/${sensorTarballName}";
       sensorTarballHash = sensorManifest.sha256;
 
-      hostconfigTarballUrl = "https://${releasesDomain}/upwind-agent-hostconfig/v${hostconfigSemver}/${hostconfigTarballName}";
-      hostconfigTarballHash = hostconfigManifest.sha256;
+      hostconfigTarballUrl = if hostconfigVersion != "" then "https://${releasesDomain}/upwind-agent-hostconfig/v${hostconfigSemver}/${hostconfigTarballName}" else null;
+      hostconfigTarballHash = if hostconfigVersion != "" then hostconfigManifest.sha256 else null;
 
       authEndpoint = "https://oauth.${regionDomain}/oauth/token";
       authAudience = "https://agent.${regionDomain}";

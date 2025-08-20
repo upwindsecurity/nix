@@ -57,7 +57,7 @@ in
       expected = "releases.eu.upwind.io";
     };
 
-    ### Sensor
+    ### Install Sensor and Hostconfig
 
     testReleasePackages = {
       expr = (mkRelease { }).packages;
@@ -72,6 +72,24 @@ in
         hostconfigTarballUrl = "https://releases.upwind.io/upwind-agent-hostconfig/v0.7.0/upwind-agent-hostconfig-v0.7.0-linux-amd64.tar.gz";
         hostconfigTarballHash = "b0d9e1693dd2c0991e9d5ac928a158a7b51931ae1edafc6f4d043eb1473b31bf";
         hostconfigTarballName = "upwind-agent-hostconfig-v0.7.0-linux-amd64.tar.gz";
+      };
+    };
+
+    ### Hostconfig disabled
+
+    testReleaseHostconfigDisabled = {
+      expr = (mkRelease { hostconfigVersion = ""; }).packages;
+      expected = {
+        authAudience = "https://agent.upwind.io";
+        authEndpoint = "https://oauth.upwind.io/oauth/token";
+
+        sensorTarballUrl = "https://releases.upwind.io/upwind-agent/v0.119.0/upwind-agent-v0.119.0-linux-amd64.tar.gz";
+        sensorTarballHash = "4cfa32684135322a9ff748b6143f4ef4dcd7e9509630d93a7f415aec32fe1776";
+        sensorTarballName = "upwind-agent-v0.119.0-linux-amd64.tar.gz";
+
+        hostconfigTarballUrl = null;
+        hostconfigTarballHash = null;
+        hostconfigTarballName = null;
       };
     };
 
