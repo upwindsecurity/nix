@@ -7,22 +7,26 @@
 
 let
   release = import ./release.nix {
-    inherit sensorVersion hostconfigVersion region dev;
+    inherit lib sensorVersion hostconfigVersion region dev;
     system = stdenv.hostPlatform.system;
   };
   srcs =
     [(import ./upwind-artifact.nix {
       inherit stdenv bash curl jq;
-      name = release.pkgs.sensorTarballName;
-      artifactUrl = release.pkgs.sensorTarballUrl;
-      artifactHash = release.pkgs.sensorTarballHash;
+      name = release.packages.sensorTarballName;
+      artifactUrl = release.packages.sensorTarballUrl;
+      artifactHash = release.packages.sensorTarballHash;
+      authEndpoint = release.packages.authEndpoint;
+      apiEndpoint = release.packages.apiEndpoint;
     }).out]
-    ++ lib.optionals (release.pkgs.hostconfigTarballUrl != null)
+    ++ lib.optionals (release.packages.hostconfigTarballUrl != null)
     [(import ./upwind-artifact.nix {
       inherit stdenv bash curl jq;
-      name = release.pkgs.hostconfigTarballName;
-      artifactUrl = release.pkgs.hostconfigTarballUrl;
-      artifactHash = release.pkgs.hostconfigTarballHash;
+      name = release.packages.hostconfigTarballName;
+      artifactUrl = release.package.hostconfigTarballUrl;
+      artifactHash = release.package.hostconfigTarballHash;
+      authEndpoint = release.packages.authEndpoint;
+      apiEndpoint = release.packages.apiEndpoint;
     })];
 in
 

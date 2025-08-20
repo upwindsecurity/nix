@@ -18,30 +18,7 @@ rec {
     else if system == "aarch64-linux" then "arm64"
     else throw "Unsupported platform: ${system}";
 
-  packages = if dev == null then
-    let
-      sensorSemver = lib.strings.removePrefix "v" (
-        if sensorVersion == "stable" then lib.importJSON pathSensorStable else sensorVersion
-      );
-      sensorTarballName = "upwind-agent-v${sensorSemver}-linux-${arch}.tar.gz";
-      sensorManifest = lib.importJSON ../release/upwind-agent/v${sensorSemver}/${sensorTarballName}.json;
-
-      hostconfigSemver = lib.strings.removePrefix "v" (
-        if hostconfigVersion == "stable" then lib.importJSON pathHostconfigStable else hostconfigVersion
-      );
-      hostconfigTarballName = if hostconfigVersion != "" then "upwind-agent-hostconfig-v${hostconfigSemver}-linux-${arch}.tar.gz" else null;
-      hostconfigManifest = lib.importJSON ../release/upwind-agent-hostconfig/v${hostconfigSemver}/${hostconfigTarballName}.json;
-    in {
-      inherit sensorTarballName hostconfigTarballName;
-      sensorTarballUrl = "https://${releasesDomain}/upwind-agent/v${sensorSemver}/${sensorTarballName}";
-      sensorTarballHash = sensorManifest.sha256;
-
-      hostconfigTarballUrl = if hostconfigVersion != "" then "https://${releasesDomain}/upwind-agent-hostconfig/v${hostconfigSemver}/${hostconfigTarballName}" else null;
-      hostconfigTarballHash = if hostconfigVersion != "" then hostconfigManifest.sha256 else null;
-
-      authEndpoint = "https://oauth.${regionDomain}/oauth/token";
-      authAudience = "https://agent.${regionDomain}";
-  } else {
+  packages = if dev.enable then {
     sensorTarballUrl = dev.sensorTarballUrl;
     sensorTarballHash = dev.sensorTarballHash;
     sensorTarballName = lib.lists.last (lib.strings.splitString "/" dev.sensorTarballUrl);
@@ -51,6 +28,28 @@ rec {
     hostconfigTarballName = lib.lists.last (lib.strings.splitString "/" dev.hostconfigTarballUrl);
 
     authEndpoint = dev.authEndpoint;
-    authAudience = dev.authAudience;
+    apiEndpoint = dev.apiEndpoint;
+  } else let
+    sensorSemver = lib.strings.removePrefix "v" (
+      if sensorVersion == "stable" then lib.importJSON pathSensorStable else sensorVersion
+    );
+    sensorTarballName = "upwind-agent-v${sensorSemver}-linux-${arch}.tar.gz";
+    sensorManifest = lib.importJSON ../release/upwind-agent/v${sensorSemver}/${sensorTarballName}.json;
+
+    hostconfigSemver = lib.strings.removePrefix "v" (
+      if hostconfigVersion == "stable" then lib.importJSON pathHostconfigStable else hostconfigVersion
+    );
+    hostconfigTarballName = if hostconfigVersion != "" then "upwind-agent-hostconfig-v${hostconfigSemver}-linux-${arch}.tar.gz" else null;
+    hostconfigManifest = lib.importJSON ../release/upwind-agent-hostconfig/v${hostconfigSemver}/${hostconfigTarballName}.json;
+  in {
+    inherit sensorTarballName hostconfigTarballName;
+    sensorTarballUrl = "https://${releasesDomain}/upwind-agent/v${sensorSemver}/${sensorTarballName}";
+    sensorTarballHash = sensorManifest.sha256;
+
+    hostconfigTarballUrl = if hostconfigVersion != "" then "https://${releasesDomain}/upwind-agent-hostconfig/v${hostconfigSemver}/${hostconfigTarballName}" else null;
+    hostconfigTarballHash = if hostconfigVersion != "" then hostconfigManifest.sha256 else null;
+
+    authEndpoint = "https://oauth.${regionDomain}/oauth/token";
+    apiEndpoint = "https://agent.${regionDomain}";
   };
 }

@@ -12,16 +12,17 @@ let
     sensorVersion = defaultSensorVersion;
     hostconfigVersion = defaultHostconfigVersion;
     region = defaultRegion;
-    dev = null;
+    dev.enable = false;
   } // attrs );
 
   dev = {
+    enable = true;
     sensorTarballUrl = "https://example.com/sensor.tar.gz";
     sensorTarballHash = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
     hostconfigTarballUrl = "https://example.com/hostconfig.tar.gz";
     hostconfigTarballHash = "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb";
     authEndpoint = "https://auth.example.com";
-    authAudience = "https://aud.example.com";
+    apiEndpoint = "https://api.example.com";
   };
 in
   pkgs.lib.debug.runTests {
@@ -62,7 +63,7 @@ in
     testReleasePackages = {
       expr = (mkRelease { }).packages;
       expected = {
-        authAudience = "https://agent.upwind.io";
+        apiEndpoint = "https://agent.upwind.io";
         authEndpoint = "https://oauth.upwind.io/oauth/token";
 
         sensorTarballUrl = "https://releases.upwind.io/upwind-agent/v0.119.0/upwind-agent-v0.119.0-linux-amd64.tar.gz";
@@ -80,7 +81,7 @@ in
     testReleaseHostconfigDisabled = {
       expr = (mkRelease { hostconfigVersion = ""; }).packages;
       expected = {
-        authAudience = "https://agent.upwind.io";
+        apiEndpoint = "https://agent.upwind.io";
         authEndpoint = "https://oauth.upwind.io/oauth/token";
 
         sensorTarballUrl = "https://releases.upwind.io/upwind-agent/v0.119.0/upwind-agent-v0.119.0-linux-amd64.tar.gz";
@@ -107,7 +108,7 @@ in
         hostconfigTarballHash = dev.hostconfigTarballHash;
         hostconfigTarballName = "hostconfig.tar.gz";
         authEndpoint = dev.authEndpoint;
-        authAudience = dev.authAudience;
+        apiEndpoint = dev.apiEndpoint;
       };
     };
   }

@@ -3,11 +3,11 @@
   , artifactUrl
   , artifactHash
   , authEndpoint
-  , authAudience
+  , apiEndpoint
 }:
 
 stdenv.mkDerivation {
-  inherit name artifactUrl authEndpoint authAudience;
+  inherit name artifactUrl authEndpoint apiEndpoint;
 
   src = ./.;
 
