@@ -1,9 +1,5 @@
 # Upwind Sensor
 
-## TODO
-
-* Support Nix Flakes.
-
 ## Usage
 
 Provide credentials to fetch artifacts:
@@ -28,7 +24,7 @@ in {
   services.upwindSensor = {
     enable = true;
     enableScanner = true;
-    sensorVersion = "0.115.3";   # (Optional) pin sensor/scanner version
+    sensorVersion = "0.119.0";   # (Optional) pin sensor/scanner version
     region = "us";               # Change to "eu" if needed
     logLevel = "info";
     sensorEnvironment = {        # (Optional) additional env vars for sensor service
@@ -59,7 +55,17 @@ file can be passed to `systemd.services.nix-daemon.serviceConfig.EnvironmentFile
 
 ## Testing
 
+### Unit test
+
+`nix eval --impure --expr 'import ./test/test.nix {}'`
+
+### Integration test
+
 The configuration in the `test/` directory can be used with nix-build
 to test the build:
 
 `nix-build test`
+
+## TODO
+
+* Support Nix Flakes.

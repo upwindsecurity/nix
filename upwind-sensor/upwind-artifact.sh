@@ -4,7 +4,7 @@
 
 response="$("${curl}" -fsSL -X POST \
     --data grant_type=client_credentials \
-    --data "audience=${authAudience}" \
+    --data "audience=${apiEndpoint}" \
     --data "client_id=${UPWIND_AUTH_CLIENT_ID}" \
     --data "client_secret=${UPWIND_AUTH_CLIENT_SECRET}" \
     --url "${authEndpoint}" 2>&1)"

@@ -1,0 +1,24 @@
+name: Lint and Test
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v31
+        with:
+          nix_path: nixpkgs=channel:nixos-unstable
+
+      - name: Check syntax
+        run: find . -name '*.nix' | xargs nix-instantiate --parse > /dev/null
+
+      - name: Lint
+        run: nix run github:nix-community/nixpkgs-lint -- ./upwind-sensor
+      
+      - name: Test
+        run: nix eval --impure --expr 'import ./upwind-sensor/test/test.nix {}'

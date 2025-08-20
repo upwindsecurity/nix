@@ -5,10 +5,13 @@
   ];
   services.upwindSensor = {
     enable = true;
-    domain = "upwind.io";
+    enableScanner = true;
     cloudProvider = "byoc";
     cloudAccountId = "byoc-1234";
     zone = "byoc-east";
+    extraConfig = {
+      scanner-v2 = true;
+    };
   };
 
   # ---------------------------------------------------------------------------

@@ -1,0 +1,7 @@
+{
+  "name": "upwind-agent-hostconfig",
+  "arch": "amd64",
+  "version": "0.5.2",
+  "package": "https://releases.upwind.io/upwind-agent-hostconfig/v0.5.2/upwind-agent-hostconfig-v0.5.2-linux-amd64.tar.gz",
+  "sha256": "85cc27fc54d4ce2f24c12aca3d3673c2070381e9960502d4266520a5c3f37813"
+}

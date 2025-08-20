@@ -1,34 +1,24 @@
 { stdenv, bash, curl, jq
-, domain
-, region
-, artifactName
-, artifactVersion
-, artifactArch
-, artifactHash
+  , name
+  , artifactUrl
+  , artifactHash
+  , authEndpoint
+  , apiEndpoint
 }:
 
-let
-  tarballName = "${artifactName}-v${artifactVersion}-linux-${artifactArch}.tar.gz";
-  regionUrl=if region == "us" then domain else "${region}.${domain}"; 
-  releaseUrl="https://releases.${regionUrl}";
-  artifactUrl="${releaseUrl}/${artifactName}/v${artifactVersion}/${tarballName}";
-  authEndpoint="https://oauth.${regionUrl}/oauth/token";
-  authAudience="https://agent.${regionUrl}";
-in
-  stdenv.mkDerivation {
-    inherit artifactUrl authEndpoint authAudience;
+stdenv.mkDerivation {
+  inherit name artifactUrl authEndpoint apiEndpoint;
 
-    name = tarballName;
-    src = ./.;
+  src = ./.;
 
-    impureEnvVars=["UPWIND_AUTH_CLIENT_ID" "UPWIND_AUTH_CLIENT_SECRET"];
+  impureEnvVars=["UPWIND_AUTH_CLIENT_ID" "UPWIND_AUTH_CLIENT_SECRET"];
 
-    curl = "${curl}/bin/curl";
-    jq = "${jq}/bin/jq";
-    builder = "${bash}/bin/bash";
-    args = [ ./upwind-artifact.sh ];
+  curl = "${curl}/bin/curl";
+  jq = "${jq}/bin/jq";
+  builder = "${bash}/bin/bash";
+  args = [ ./upwind-artifact.sh ];
 
-    outputHashMode = "flat";
-    outputHashAlgo = "sha256";
-    outputHash = artifactHash;
-  }
+  outputHashMode = "flat";
+  outputHashAlgo = "sha256";
+  outputHash = artifactHash;
+}
