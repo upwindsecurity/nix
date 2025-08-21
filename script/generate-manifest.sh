@@ -2,17 +2,17 @@
 set -uo pipefail
 
 main() {
-    arg_release_url_or_path="$1"
-    arg_component="$2"
-    arg_version="$(strip-prefix "$3" v)"
-    arg_platform="$4"
-    arg_arch="$5"
-
     # show usage and exit if args aren't provided
     if [[ $# != 5 ]]; then
         print_usage_message
         exit 1
     fi
+
+    arg_release_url_or_path="$1"
+    arg_component="$2"
+    arg_version="$(strip-prefix "$3" v)"
+    arg_platform="$4"
+    arg_arch="$5"
 
     filename="${arg_component}-v${arg_version}-${arg_platform}-${arg_arch}.tar.gz"
     if [[ "${arg_release_url_or_path}" == http* ]]; then
